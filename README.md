@@ -3,7 +3,8 @@
 # 🌟 Interview_Question_Study | 면접 질문 스터디
 
 ## 👫 팀원
-- Back-end : (모집중)
+
+- Back-end : 장재원, 한화연
 
 ## 학습 기간
 
@@ -15,6 +16,7 @@
 - 각 질문에 대한 개념 서로 설명하기
 
 ## 학습 내용
+
 - 01_OS
 - 02_Network
 - 03_Database
