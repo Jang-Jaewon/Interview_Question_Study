@@ -1,7 +1,7 @@
 # Data Structure
 
 - [배열과 연결리스트의 장단점은?](#%EF%B8%8F-배열과-연결리스트의-특징과-장단점은)
-
+- [Stack(스택)과 Queue(큐)란?](#%EF%B8%8F-stack(스택)과-queue(큐)란)
  
 <br>
 
@@ -21,7 +21,57 @@
 - 이에 삽입, 삭제가 빈번하다면 연결리스트를 쓰는 것이 효율적이고, 조회가 빈번하다면 연결리스트를 사용하는게 효율적이다.
 
 ![title](https://media.vlpt.us/images/jewon119/post/c2e4aca7-f435-4cdb-9662-c5b2ae39a1a4/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA%202022-01-07%20%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE%208.56.00.png)   
+ 
+<br>
 
+## 💡 Stack(스택)과 Queue(큐)란?
+> 스택은 한쪽에서만 자료를 넣고 뺄 수 있는 LIFO(Last-In-First-Out) 형식의 선형 자료구조이다. 반면 큐는 가장 먼저 넣은 데이터를 가장 먼저 꺼낼 수 있는 FIFO(First-In-First-Out) 형식의 선형 데이터 구조이다. 스택은 재귀적 알고리즘에 주로 사용되고, 큐는 너비우선탐색(DFS)를 활용된다. 운영체제에서 프로그램이 화면에 나타나는 순서, 웹 브라우저의 뒤로가기 기능 같은 경우 스택의 사례이고, 은행창구 번호표 대기나, 운영체제의 태스크 스케쥴링은 큐의 대표적인 사용 사례이다.
+
+### 추가적인 내용 기술
+- 스택에서 데이터를 맨 위에 쌓는 행위를 push라하고, 맨 위에 데이터를 꺼내는 행위를 pop이라 한다.
+- 예를 들어, 쌓여진 책 위에 책을 하나 더 쌓으면 이는 push이고, 마지막에 쌓아올린 것을 빼내면 pop이다.
+
+```python
+# push
+def stack_push(stack, value):
+    stack.append(value)
+# pop    
+def stack_pop(stack):
+    last = stack.pop()
+    return last
+stack = [] # stack 생성
+stack_push(stack, 5)
+stack_push(stack, 6)
+stack_push(stack, 7)
+stack_push(stack, 8)
+print(stack) # [5, 6, 7, 8]
+last = stack_pop(stack)
+print(last) # 8 
+print(stack) # [5, 6, 7]
+```
+
+- 큐에서 데이터를 맨 뒤에 넣는 행위를 enqueue라하고, 데이터를 맨 앞에서 빼는 행위를 dequeue라 한다.
+- 예를 들어, 계산대에서 줄을 뒤에서 서는 것이 enqueue이고, 맨 앞에사람이 계산을 마치고 나가는 것이 dequeue이다.
+- python에서 큐를 구현하는 방법으로 Array.pop(0)도 가능하나 시간 복잡도가 높기 때문에 덱(deque) 라이브러리를 사용
+
+```python
+from queue import deque
+# enqueue
+def queue_push(q, value):
+    q.append(value)
+# dequeue
+def queue_pop(q):
+    front = q.popleft()
+    return front
+queue = deque() # queue 생성
+queue_push(queue, 5)
+queue_push(queue, 6)
+queue_push(queue, 7)
+queue_push(queue, 8)
+front = queue_pop(queue)
+print(front) # 5
+print(list(queue)) # [6, 7, 8]
+```
 
 <br>
 
