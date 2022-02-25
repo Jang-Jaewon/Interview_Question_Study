@@ -4,6 +4,7 @@
 - [대칭키와 비대칭키가 무엇인가요?](#%EF%B8%8F-대칭키와-비대칭키가-무엇인가요)
 - [SSL 통신의 동작방식은 어떻게 되는가?](#%EF%B8%8F-ssl-통신의-동작방식은-어떻게-되는가)
 - [CORS는 무엇인가요?](#%EF%B8%8F-CORS는-무엇인가요)
+- [CORS는 시나리오는 무엇이 있나요?](#%EF%B8%8F-CORS는-시나리오는-무엇이-있나요)
 
 
 <br>
@@ -87,3 +88,17 @@
 - CORS는 Request에 header에 Origin이라는 값과 Response의 header에 Access-Control-Allow-Origin가 같으면 웹브라우저가 SOP 정책에 위배되지 않다고 판단하고 자원을 공유시킬 수 있도록 해준다.
 
 <br>
+
+## 💡 CORS는 시나리오는 무엇이 있나요?
+> CORS는 메커니즘은 요청 header에 담긴 Origin과 응답 header에 담긴 Access-Control-Allow-Origin를 웹브라우저가 비교하여 요청에 대한 응답을 처리할지, CORS 에러를 발생시킬지 판단하는 절차이다. 이에 CROS의 접근 제어 시나리오는 세부적으로 예비 요청(Preflight Request), 단순 요청(Simple Request), 인증 정보 포함 요청(Credentialed Request)으로 나뉜다. 예비 요청은 사전에 OPTIONS 매서드를 통해 웹브라우저에게 동일 출처인지 확인을 거친 후 본 요청을 보내는 방법이고, 단순 요청은 본 요청을 바로 보내면서 이러한 절차를 진행하는 차이를 가진다. 인증 정보 포함 요청은 더욱 보안을 강화시킨 방법으로 요청에 쿠키를 담을 수 있도록 옵션값을 지정해주는 CORS 시나리오를 의미한다.
+
+
+### 추가적인 내용 기술
+- CORS의 대표적인 시나리오는 예비 요청(Preflight Request), 단순 요청(Simple Request), 인증 정보 포함 요청(Credentialed Request) 으로 나뉜다.
+- 예비 요청(Preflight Request)은 OPTIONS 매서드로 Origin을 실어 요청을 보내면, 서버에서 Access-Control-Allow-Origin에 Origin을 명시하여 응답한다. 이를 브라우저에서 출처가 같은지 확인한 뒤, 같으면 본 요청을 보내게된다. 다르다면, 브라우저가 CORS 에러를 띄운다.![](https://images.velog.io/images/jewon119/post/1647b882-f828-4b6a-8b2d-b59301256398/preflight.png)
+- 단순 요청(Simple Request)은 예비 요청 과정을 생략하고, 바로 본 요청을 이뤄질 때 Origin을 요청을 보내고 서버에서 Access-Control-Allow-Origin를 명시하여 반환함으로써 이를 웹브라우저가 평가하는 방식이다.
+- 단순 요청(Simple Request)은 요청 시, GEt, HEAD, POST 옵션만 사용 가능하고, 사용한 가능한 헤더의 종류 또는 Content-Type의 종류가 제한적이다. 
+- 예를 들어, 단순 요청으로 PUT, DELETE 매서드로 요청이 가능하다면, 이미 서버에게 본 요청을 보내 자원을 수정하거나 삭제한 뒤에 웹브라우저에서 CORS 에러를 발생시키기 때문에 단순 요청은 여러 제약사항을 가지고 있다.![](https://images.velog.io/images/jewon119/post/9d441e03-c161-4855-9937-5f99c54c11e3/simplerequest.png)
+- 인증 정보 포함 요청(Credentialed Request)은 보다 보안을 강화시킨 방식으로 쿠기를 담기 위해 지정하는 옵션이다.
+- 즉, fetch나 비동기 API들은 기본적으로 쿠기를 담아서 요청을 보내지 않기 때문에 쿠기를 담을 수 있도록 옵션 값을 지정해주는 것이다. 이 옵션으로 same-origin(기본값), Include, Omit이 있다.
+- same-origin은 같은 출처 간 요청에만 인증 정보를 담겠다는 기본으로 지정된 옵션 값이고, include는 모든 요청에 인증 정보를 담을 때 사용한다. omit은 모든 요청에 인증 정보를 담지 않을 때 사용하는 옵션이다.
