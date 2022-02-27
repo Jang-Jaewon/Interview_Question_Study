@@ -5,6 +5,8 @@
 - [SSL 통신의 동작방식은 어떻게 되는가?](#%EF%B8%8F-ssl-통신의-동작방식은-어떻게-되는가)
 - [CORS는 무엇인가요?](#%EF%B8%8F-CORS는-무엇인가요)
 - [CORS는 시나리오는 무엇이 있나요?](#%EF%B8%8F-CORS는-시나리오는-무엇이-있나요)
+- [REST API란?](#%EF%B8%8F-rest-api란)
+- [REST API를 설계할 때 주의할 점은?](#%EF%B8%8F-rest-api를-설계할-때-주의할-점은)
 
 
 <br>
@@ -102,3 +104,43 @@
 - 인증 정보 포함 요청(Credentialed Request)은 보다 보안을 강화시킨 방식으로 쿠기를 담기 위해 지정하는 옵션이다.
 - 즉, fetch나 비동기 API들은 기본적으로 쿠기를 담아서 요청을 보내지 않기 때문에 쿠기를 담을 수 있도록 옵션 값을 지정해주는 것이다. 이 옵션으로 same-origin(기본값), Include, Omit이 있다.
 - same-origin은 같은 출처 간 요청에만 인증 정보를 담겠다는 기본으로 지정된 옵션 값이고, include는 모든 요청에 인증 정보를 담을 때 사용한다. omit은 모든 요청에 인증 정보를 담지 않을 때 사용하는 옵션이다.
+
+<br>
+
+## 💡 REST API란?
+> REST API란 URI를 통해 자원(Resource)을 명시하고, HTTP Method(POST, GET, PUT, DELETE)를 통해 해당 자원에 대한 CRUD 행위를 적용하는 것을 의미한다. 이에 REST API는 별도의 인프라를 구출할 필요가 없고, URI와 Method를 통해 쉽게 이해하고 사용 가능한 아키텍쳐란 점에 장점을 가진다. 단, REST API는 표준이 존재하지 않고, 사용할 수 있는 Method가 4가지 밖에 없다는 단점을 가지고 있다. 그럼에도 불구하고, REST API가 필요한 이유는 애플리케이션을 모듈, 기능별로 분리하기 쉽기 때문에 확장성이 높고, 어떤 다른 애플케이션 간에도 상호간 통신이 가능하단 담점이 있기 때문이다. 또한 서버에서 클라이언트 측에 필요한 데이터만 부분적으로 보내주면 되기 때문에 부담이 없고 유지보수성이 높기 때문이다.
+
+
+### 추가적인 내용 기술
+- REST API란 URI(Uniform Resource Identifier)를 통해 자원(Resource)을 명시하고, HTTP Method(POST, GET, PUT, DELETE)를 통해 해당 자원에 대한 CRUD 행위를 적용하는 것을 의미한다.
+- 즉, REST는 자원 기반의 구조(ROA, Resource Oriented Architecture) 설계의 중심에 Resource가 있고 HTTP Method를 통해 Resource를 처리하도록 설계된 아키텍쳐를 의미한다.
+- 이에 REST한 방식으로 설계된 API를 RESTful API라 부르기도 한다.
+- REST API는의 장점은 HTTP 프로토콜의 인프라를 그대로 사용하므로 REST API 사용을 위한 별도의 인프라를 구출할 필요가 없다.
+- 또한 REST API는 URI와 Method를 통해 의도하는 바를 명확하게 나타내므로 쉽게 파악할 수 있고, HTTP 표준 프로토콜를 사용하는 모든 플랫폼에서 사용 가능하다.
+- REST API의 단점은 명확한 표준이 존재하지 않고, 사용할 수 있는 Method가 4가지 밖에 없다.
+
+<br>
+
+## 💡 REST API를 설계할 때 주의할 점은?
+> URI는 동사보다는 명사를, 대문자보다는 소문자를 사용하여야 한다. 슬래시 구분자(/)는 계층 관계를 나타내는데 사용하고, URI 마지막 문자로 슬래시(/)를 포함하지 않는다. 하이픈(-)은 URI가독성을 높이는데 사용하고, 언더바(_)는 사용하지 않는다. 파일 확장자는 URI에 포함시키지 않는다. 리소스 간 관계가 있는 경우, 소유 관계를 명확히 나타낸다. 단, 가급적 전달하고자하는 자원은 명사를 사용하되, 컨트롤 자원을 의미하는 경우 예외적으로 동사를 허용한다.
+
+
+### 추가적인 내용 기술
+- URI는 동사보다는 명사를, 대문자보다는 소문자를 사용하여야 한다. 행위는 포함하지 않는다.
+> Bad Example http://example.com/Accounts-create/
+> Good Example  http://example.com/accounts/  
+- 슬래시 구분자(/)는 계층 관계를 나타내는데 사용하고, URI 마지막 문자로 슬래시(/)를 포함하지 않는다.
+> Bad Example http://example.com/students/3/courses/
+> Good Example  http://example.com/students/3/courses
+- 하이픈(-)은 URI가독성을 높이는데 사용하고, 언더바(_)는 사용하지 않는다.
+>Bad Example http://example.com/blogs/jewon119/posts/what_is_rest_api
+>Good Example http://example.com/blogs/jewon119/posts/what-is-rest-api
+- 파일 확장자는 URI에 포함시키지 않고, Accept header를 사용한다.
+>Bad Example http://example.com/users/92/photo.jpg
+>Good Example http://rexample.com/users/92/photo 
+- 가급적 전달하고자하는 자원은 명사를 사용하되, 컨트롤 자원을 의미하는 경우 예외적으로 동사를 허용한다.
+>Bad Example http://example.com/posts/duplicating
+>Good Example http://example.com/posts/duplicat
+
+
+<br>
