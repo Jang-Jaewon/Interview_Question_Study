@@ -1,5 +1,6 @@
 # Network
 
+- [HTTP 1.1과 HTTP 2.0의 차이점은?](#%EF%B8%8F-http-1.1과-http-2.0의-차이점은)
 - [HTTP와 HTTPS의 차이점이 무엇인가요?](#%EF%B8%8F-http와-https의-차이점이-무엇인가요)
 - [대칭키와 비대칭키가 무엇인가요?](#%EF%B8%8F-대칭키와-비대칭키가-무엇인가요)
 - [SSL 통신의 동작방식은 어떻게 되는가?](#%EF%B8%8F-ssl-통신의-동작방식은-어떻게-되는가)
@@ -7,6 +8,28 @@
 - [CORS는 시나리오는 무엇이 있나요?](#%EF%B8%8F-CORS는-시나리오는-무엇이-있나요)
 - [REST API란?](#%EF%B8%8F-rest-api란)
 - [REST API를 설계할 때 주의할 점은?](#%EF%B8%8F-rest-api를-설계할-때-주의할-점은)
+
+
+<br>
+
+## 💡 HTTP 1.1과 HTTP 2.0의 차이점은?
+> HTTP 1.1은 Persistent Connection 도입으로 기존 HTTP 1.0의 단점을 보완했지만, 다중 연결이 불가능하고, 요청과 응답이 순차적으로 이루어지는 단점이 존재했다. 또한 HTTP 1.1은 Pipelining 기술의 도입을 통해 Persistent Connection이 발생시키는 Latency를 부분적으로 보완할 수 있었지만, Head Of Line Blocking의 문제를 발생하였다. 이 밖에도 HTTP 1.1은 Header의 중복을 처리하지 않았기 때문에 불필요하게 큰 Header의 크기로 인하여 데이터의 낭비가 발생했다. HTTP 2.0은 기존 HTTP 1.1의 대체가 아닌 확장 개념으로 성능향상의 초점을 맞춰 1.1 버전의 한계를 보완하는데 목적을 가지고 있다. HTTP 2,0의 주요한 변화 중 하나는 Binary Framing 계층을 도입하여 데이터를 분할할 뿐만아니라 Bianry 형식으로 인코딩하여 전송 속도를 향상시키고, 오류를 감소시켰다. 뿐만아니라 프레이밍으로 분할시킴으로써 순서에 제약받지 않고 동시에 여러 응답을 stram으로 주고 받는 Multiplexing 방식을 도입해 Head Of Line Blocking의 문제를 해결하였다. 또한 Stream Prioritization과 Server Push 기술을 통해 효율성을 최적화하였고, Header의 크기를 압축하는 Header Compression을 통해 Header의 크기가 80% 이상 감소되었다.
+
+
+### 추가적인 내용 기술
+- HTTP 1.1은 Persistent Connection 도입으로 인해 Connection 마다 하나의 요청을 처리할 수 있게 되었다. Persistent Connection란 지정한 TimeOut 동안 Connection을 끊지 않는 방식을 의미한다.
+- 단, Persistent Connection는 동시에 요청 전송이 불가능하고 요청과 응답이 순차적으로 이루어지도록 설계되어 있기 때문에 다수의 리소스(CSS, JS, Image)를 처리하기 위해서는 요청할 리소스 개수에 비례해 Latency가 발생된다.
+- 또한 HTTP 1.0에서는 연결에 따른 요청에의 응답이 있어야만 다음 요청이 순차적으로 가능했지만 HTTP 1.1에서는 Pipelining 기술을 도입하였다.
+- Pipelining 이란 하나의 Connection에 응답을 기다리지 않고, 순차적으로 여러 요청을 보내 그 순서에 맞춰 응답을 받는 방식을으로 Persistent Connection가 발생시키는 Latency를 부분적으로 보완할 수 있다.
+- 단, Pipelining의 단점으로는 Head Of Line Blocking인데, 이는 선행되는 요청이 지연되면 그 다음 요청도 기다려야 하는 것이다. 쉽게 말해, 서버에서 처리가 끝났는데 먼저 선행되어야하는 요청이 처리되지않아 그 뒤에 응답들이 처리가 되었는데도 불구하고 대기를 타는 것이다.
+- 이 밖에도 HTTP 1.1의 한계로는 연속된 요청일 경우, Header가 중복될 경우가 많은데 중복된 Header 값을 모두 매번 전송하기 때문에 주고 받는 불필요하게 큰 Header의 크기로 데이터 낭비가 존재했다. 
+- HTTP 2.0은 기존 HTTP 1.1의 대체가 아닌 확장 개념으로 성능향상의 초점을 맞춰 1.1 버전의 한계를 보완하는데 목적을 가지고 있다.
+- HTTP 2.0은 Binary Framing 계층을 도입하여 메시지 전송 방식을 변환시켰다. Binary Framing 계층은 Application 계층 내에서 작동하는데 데이터를 프레이밍화하여 분할할 뿐만아니라 기존의 일반 Text 형식아 아닌 Bianry 형식으로 인코딩하여 전송 속도를 향상시키고, 오류를 감소시켰다.
+- 또한 프레이밍을 통해 요청을 Headers와 여러 Data로 분할시켰기 때문에 한 Connection으로 여러개의 응답을 순서에 상관없이 stream으로 주고 받아, Head Of Line Blocking의 문제를 해결하였다. 이를 Request and Response Multiplexing이라한다.
+- 또한 HTTP 2.0에서는 Stream Prioritization을 도입하여, 리소스에 우선순위를 지정하여 중요도가 높은 리소스를 먼저 응답하게끔 설정이 가능하다.
+- 이 밖에도 Server Push란 기능으로 인해 클라이언트가 요청하지 않은 정보일지라도 현재 요청으로 인하여 발생될 의존관계를 고려해서 추가 발생될 요청을 사전에 응답할 수 있다.
+- 앞 서, HTTP 1.1에서 Header의 크기의 문제를 보완하기 위해 HTTP 2.0에서는 Header Compression를 도입하였다. 
+- Header Compression는 Static Dynamic Table이라해서, 이미 보내져 중복된 Header값은 index만 나타내고, 중복되지 않은 데이터는 Huffman 인코딩 통해 Header를 전반적인 Header의 크기를 압축하는 것이다. 이를 통해 Header의 크기가 80% 이상 감소되었다고 한다.
 
 
 <br>
