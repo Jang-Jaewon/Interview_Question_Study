@@ -7,7 +7,7 @@
 
 ## 💡 Processor, Program, Process의 차이
 
-> 프로세서(processor)는 연산 작업을 수행하는 물리적 장치인, CPU를 의미하낟. 프로그램(program)은 disk에 저장된 코드 또는 명령어의 집합을 의미하고 이 파일을 실행시켜 memory에 올리면 프로세스(process)라 한다. 즉, 프로그램(program)이 파일로 있다가 실행되어 이 일부가 memory에 올라간 상태가 프로세스(process)이고, 프로세서(processor)에 의해 처리되다.
+> 프로세서(processor)는 연산 작업을 수행하는 물리적 장치인, CPU를 의미한다. 프로그램(program)은 disk에 저장된 코드 또는 명령어의 집합을 의미하고 이 파일을 실행시켜 memory에 올리면 프로세스(process)라 한다. 즉, 프로그램(program)이 파일로 있다가 실행되어 이 일부가 memory에 올라간 상태가 프로세스(process)이고, 프로세서(processor)에 의해 처리되다.
 
 ### 추가적인 내용 기술
 
