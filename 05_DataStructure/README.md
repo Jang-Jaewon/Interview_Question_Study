@@ -4,6 +4,7 @@
 - [Stack(스택)과 Queue(큐)란?](#%EF%B8%8F-stack(스택)과-queue(큐)란)
 - [Hash Table(해시테이블) 이란?](#%EF%B8%8F-hash-table(해시테이블)-이란)
 - [해쉬 충돌과 이를 해결하는 방법은?](#%EF%B8%8F-해쉬-충돌과-이를-해결하는-방법은)
+- [heap에 대해 설명해주세요](#%EF%B8%8F-heap에-대해-설명해주세요)
  
 <br>
 
@@ -109,3 +110,44 @@ print(list(queue)) # [6, 7, 8]
 - 이에 Linear Probing 기법은 hash adress의 다음 adress부터 맨 처음 나오는 빈 공간에 저장하는 방식이기 때문에 저장공간 활용도가 높지만, 데이터 길이가 많이 늘어나는 것에 대한 별도의 준비를 해야 한다.
 
 <br>
+
+## 💡 heap에 대해 설명해주세요
+> heap이란 데이터에서 최대값과 최소값을 빠르게 찾기위해 고안된 완전 이진트리 형태의 자료구조이다. 힙은 max heap과 min heap이라는 2가지 구조를 가지는데, max heap의 각 부모노드는 자식노드들 보다 항상 크거나 최소한 같고, min heap의 부모노드는 자식노드들 보다 항상 작거나 최소한 같다. heap을 사용하는 이유는 큐나, 배열에 데이터를 넣고 최대값이나 최소값을 찾으려면 최악의 경우 O(N)의 시간복잡도를 가지는데, heap을 사용하면 O(log N)으로 시간복잡도가 현격하게 줄어들기 때문이다.
+
+### 추가적인 내용 기술
+- heap과 이진트리는 모두 이진트리 구조를 사용하는데 있어 공통점이 존재하나, heap 구조는 자식 노드보다 부모노드가 크거나 같고, 또는 작거나 같다. 또한 heap은 자식노드들 끼리는 어느 것이든 클 수 있고, 정렬되지 않는다. 
+- 이에 반해 이진트리는 자식노드가 부모노드보다 크면 오른쪽, 작으면 왼쪽으로 배치된다. 
+- 이진탐색트리는 탐색을 위한 구조이고, heap은 최소값 또는 최대값을 빠르게 찾기 위해 고안된 구조이기 때문이다.
+
+```python
+# Min Heap(최소힙) : 각 부모노드는 자식노드들 보다 항상 작거나 최소한 같다.
+import heapq
+data = [21, 67, 33, 13, 40, 89, 71, 19]
+min_heap = list()
+heapq.heapify(min_heap)
+# heappush를 이용하여 데이터 삽입
+for i in data:
+  heapq.heappush(min_heap, i)
+print(min_heap) # [13, 19, 33, 21, 40, 89, 71, 67] 👈 최소힙  
+# 최소힙 활용
+print(heapq.nlargest(3, min_heap)) # [89, 71, 67] 👈 최소힙에서 큰 수 3개
+print(heapq.heappop(min_heap)) # 13 👈 최소힙에서 최소값 제거
+print(min_heap) # [19, 21, 33, 67, 40, 89, 71] 👈 최소값 제거 후 heap 상태
+```
+
+```python
+# Max Heap(최대힙) : 각 부모노드는 자식노드들 보다 항상 거나 최소한 같다.
+import heapq
+data = [21, 67, 33, 13, 40, 89, 71, 19]
+data = [-x for x in data] # 👈 Heapq 라이브러리로 최대힙을 간단히 구현하기 위해 음수로 변경
+print(data) # [-21, -67, -33, -13, -40, -89, -71, -19]
+max_heap = list()
+heapq.heapify(max_heap)
+# heappush를 이용하여 데이터 삽입
+for i in data:
+  heapq.heappush(max_heap, i)
+# 최대힙 활용
+print(heapq.nlargest(3, max_heap)) # [-13, -19, -21] 👈 최대힙에서 가장 작은 수 3개
+print(heapq.heappop(max_heap)* -1) # 89 👈 최대값 제거
+print(max_heap) # [-71, -40, -67, -19, -21, -33, -13] 👈제거 후 최대힙
+```
