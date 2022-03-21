@@ -3,6 +3,7 @@
 - [noSQL과 RDBMS 장단점, 차이는 무엇인가요?](#%EF%B8%8F-nosql과-rdbms-장단점-차이는-무엇인가요)
 - [데이터베이스에서 인덱스를 사용하는 이유와 장단점](#%EF%B8%8F-데이터베이스에서-인덱스를-사용하는-이유와-장단점)
 - [ORM을 쓰는 이유와 장점](#%EF%B8%8F-orm을-쓰는-이유와-장점)
+- [N+1 문제가 무엇인지](#%EF%B8%8F-n+1-문제가-무엇인지)
 
 <br>
 
@@ -45,5 +46,40 @@
 - 특히, SQL문에 선언문, 할당, 종료 같은 부수적인 코드로 문법이 장황하고 복잡한데 비해, ORM은 가독성이 높아 편리하고 유지보수에 용이하다.
 - 뿐만아니라 해당 Database에 대한 종속성을 낮출 수 있기 때문에 DBMS를 교체하는데 리스크가 적고 RDBMS의 데이터 구조와 객체지향 모델 사이의 간격을 좁힐 수 있다.
 - 다만, ORM에도 프로젝트가 커지고, Query가 복잡해질 수록 ORM에 의존하면 속도의 저하가 발생하게 되는 한계가 존재한다. 이에 일부 사용되는 대형 Qeury는 속도를 위해 별도의 SQL문을 작성하기도 한다.
+
+<br>
+
+## 💡️ N+1 문제가 무엇인지
+
+- N+1문제란 ORM을 쓰는 프레임워크에서 Lazy-Loading의 특성으로 인해 다른 테이블의 필드를 외래키로 참조해서 Data를 가져올 때 발생한다.
+- Publish와 Book 테이블이 있고, Book 테이블의 user 필드가 Publish 테이블을 정참조하고 있다고 가정해 보자.
+```python
+# Publish 테이블
+class Publish(TimeStampModel):
+    name               = models.CharField(max_length=30)
+# Book 테이블    
+class Board(TimeStampModel):
+    name               = models.CharField(max_length=100)
+    description        = models.TextField()
+    publisher          = models.ForeignKey('Publish', on_delete=models.CASCADE)
+```
+
+- Book에 대한 목록을 반환하는 API를 만든다고 가정 할 때, get 매서드는 아래와 같은 로직을 가진다.
+```python
+class BookListView(View):
+    def get(self, request):
+        result = []
+        queryset = Book.objects.all()
+        for book in queryset:
+            books.append({
+                'id':book.id,
+                'name':book.name,
+                'publish':book.publisher.name, # 참조하는 테이블에 접근할 때, 이미 캐싱되있지 않아 query 발생(N+1 문제)
+            })
+        return JsonResponse({"message": result}, status=200)
+```
+
+- 하나의 book 객체의 publish 필드를 통해 Publish 테이블로 이동해 name값을 가져오려는 순간 N+1의 문제가 발생된다.
+-  여기서 for문이 순회하는 횟수가 N이 되기 때문에 데이터가 많을 수록 엄청난 양의 query가 추가되는 이 현상은 N+1 문제라한다.
 
 <br>
