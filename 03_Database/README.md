@@ -5,6 +5,7 @@
 - [ORM을 쓰는 이유와 장점](#%EF%B8%8F-orm을-쓰는-이유와-장점)
 - [N+1 문제가 무엇인지](#%EF%B8%8F-n+1-문제가-무엇인지)
 - [ORM 최적화란?](#%EF%B8%8F-orm-최적화란?)
+- [select_related, prefetch_related의 차이](#%EF%B8%8F-select_relate,-prefetch_related-차이)
 
 <br>
 
@@ -96,5 +97,19 @@ class BookListView(View):
 - 이에 미리 Query를 캐싱해둠으로써 DB에 불필요한 query를 발생시키지 않는 방법인 EagerLoading을 사용하여 ORM 최적화가 가능하다.
 - ORM을 최적화를 하는 이유는 비용 감소와 서비스의 질을 높히기 위해서 데이터를 빠르게 가져와야하기 때문이다.
 - 모든 병목은 DB에서 발생하고, 서비스를 많은 이용자가 사용할 수록 데이터를 가져오는 속도에 서비스의 질이 큰 영향을 미치기 때문에 ORM 최적화는 필수이다.
+
+<br>
+
+## 💡️ select_related, prefetch_related의 차이
+> ORM에서 N+1 문제를 해결하기 위해 사용하는 기법을 즉시 호출(EagerLoading)라 하는데, 지금 당장 사용하지 않을 데이터도 포함하여 미리 Query문을 가져오는 방식이다. 정참조 일 때는 select_related, 역참조일 때는 prefetch_related 사용하여 데이터를 미리 캐슁하는 방식으로 N+1 문제를 해결한다. select_related은 참조된 객체들이 정참조 관계를 이룰 때 사용하는데, SQL문에서 INNER JOIN의 방식을 사용한다. prefetch_related는 역참조 일 때 사용하는데, SQL문에서는 LEFT OUTER JOIN 방식을 사용하여 추가 쿼리 셋을 이용해 객체를를 가져온 뒤, 애플리케이션 단에서 모두 합쳐 반환한다. 이 때, prefetch_related는 result_cash란 영역에 데이터를 담기는데, 기존 query를 보내고, 추가로 역참조에 대한 prefetch_related를 보내 이를 최종적으로 합쳐주기 때문에 query가 1개 더 생기는 특징을 갖고 있다.
+
+### 추가적인 내용 기술
+- 각 각의 쿼리셋은 DB에 접근 할 때 캐시 메모리를 포함하고 있습니다. 최초 DB에 QuerySet이 요청될 때, 캐시가 비었기 때문에 Query가 발생하지만, 이후 동일한 QuerySet이 요청될 경우 추가적인 요청 없이 캐시에서 꺼내서 사용한다.
+- select_related 와 prefetch_related는 모두 QuerySet을 DB에 요청할 때, 미리 참조하는 객체들 까지 불러오는 함수이다. 
+- 이렇게 미리 가져온 객체들은 모두 캐쉬에 남아있게 되므로 매번 DB에 접근하는 N+1 문제를 해결할 수 있다.
+- select_related와 prefetch_related는 DB에 요청되는 Query 수를 줄여, performance를 향상시켜준다는 측면에서는 공통점이 있지만, 그 사용 방식에는 차이점이 있다.
+- select_related는 정참조 관계인 테이블의 객체들에 미리 Query를 요청하는 방식이고, prefetch_related는 QuerySet을 반환할 때 foreign-key, OneTonOneFeild 관계뿐만 아니라 ManyToMany, ManyToOne 관계의 모델들까지 가져오는 방식이다.
+- 또한 select_related 는 INNER JOIN 으로 쿼리셋을 가져오고, prefetch_related 는 LEFT OUTER JOIN 방식을 사용하여 모델 별로 쿼리를 실행해 최종 쿼리셋을 합쳐 가져오는 방식이다. 이에 prefetch_related는 1개의 추가 Query가 발생된다.
+- 또한 일반적으로 정참조에서는 select_related, 역참조에서는 prefetch_related를 사용합니다.
 
 <br>
