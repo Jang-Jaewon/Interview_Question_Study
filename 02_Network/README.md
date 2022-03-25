@@ -166,6 +166,10 @@
 >Bad Example http://example.com/posts/duplicating
 >Good Example http://example.com/posts/duplicat
 
+### 특이사항
+- REST API에서는 URI 마지막에 슬래시(/)를 포함하지 않는 것을 권장하는데, Django에서는 URI 마지막에 슬래시(/)를 포함하는 것을 권장한다.
+- 이에 Django REST Framework에서는 Django의 권장 사항을 따라 슬래시(/)를 포함하는 것을 우선 추천하고 있다.
+
 
 <br>
 
