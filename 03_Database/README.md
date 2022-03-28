@@ -6,6 +6,7 @@
 - [N+1 문제가 무엇인지](#%EF%B8%8F-n+1-문제가-무엇인지)
 - [ORM 최적화란?](#%EF%B8%8F-orm-최적화란?)
 - [select_related, prefetch_related의 차이](#%EF%B8%8F-select_relate,-prefetch_related-차이)
+- [Offset 기반 Pagination과 Cursor 기반 Pagination의 차이](#%EF%B8%8F-offset-기반-pagination과-cursor-기반-pagination의-차이)
 
 <br>
 
@@ -111,5 +112,22 @@ class BookListView(View):
 - select_related는 정참조 관계인 테이블의 객체들에 미리 Query를 요청하는 방식이고, prefetch_related는 QuerySet을 반환할 때 foreign-key, OneTonOneFeild 관계뿐만 아니라 ManyToMany, ManyToOne 관계의 모델들까지 가져오는 방식이다.
 - 또한 select_related 는 INNER JOIN 으로 쿼리셋을 가져오고, prefetch_related 는 LEFT OUTER JOIN 방식을 사용하여 모델 별로 쿼리를 실행해 최종 쿼리셋을 합쳐 가져오는 방식이다. 이에 prefetch_related는 1개의 추가 Query가 발생된다.
 - 또한 일반적으로 정참조에서는 select_related, 역참조에서는 prefetch_related를 사용합니다.
+
+<br>
+
+## 💡️ Offset 기반 Pagination과 Cursor 기반 Pagination의 차이
+
+> offset-based-pagination은 건너띌 row의 수를 offset 지정하고 제한할 row의 수를 limit으로 하여 데이터를 pagination하는 기법이다. offset-based-pagination는 구현이 쉽고 직관적이며, 네트워크 자원을 효율적으로 사용하기 위한 방법으로 전통적으로 사용되어왔다. cursor-based pagination은 cursor 개념을 사용하여 사용자에게 응답해준 마지막 데이터 기준으로 다음 n개 응답하는 방식이다. 즉, "n개의 row를 skip 한 다음 10개 주세요."인 offset-based-pagination 방식이 아닌, "이 row 다음것 부터 10개 주세요."를 요청하는 방식이다. 이에 cursor-based pagination은 데이터가 잦은 수정이 발생되더라도 데이터 누락 및 중복 이슈가 없고, 빠르다는 장점이 있어 실무에서 주로 사용된다.
+
+
+
+### 추가적인 내용 기술
+
+- offset-base-pagination는 OFFSET 값을 포함한 SQL 쿼리문을 동반하는데, row를 건너띌 시작점이 OFFSET으로 표현하고, LIMIT은 제한할 row의 수를 지정한다.
+- offset-base-pagination의 단점은 데이터가 잦은 수정이 발생되는 경우, 데이터 중복 또는 누락 issue가 발생한다는 것이다.
+- 또한 offset-base-pagination은 정렬기준에 대해 지정된 OFFSET까지 모두 만들어 놓은 후 LIMIT에 지정한 갯수를 자르는 방식이기 때문에 데이터가 많아질 수록 속도가 느려진다는 성능 issue가 존재한다.
+- cursor-based-pagination은 offset-based-pagination의 단점을 보완하기 위해 실무에서 사용하는 pagination 기법이다.
+- cursor-based-pagination은 SQL문에 WHERE절을 포함하고, 중복된 데이터가 존재할 가능성이 있다면 OR절을 추가해서 중복되지 않도록 row 기준 계속 잡아 데이터를 가져온다.
+- OR절이 필요한 이유는 create_at 등을 통해 생성된 날짜로 정렬한 뒤, pagination 했을 때, 동시에 생성된 데이터가 존재한다면 그 시간에 생성된 1개의 row를 제외하고 모두 무시될 수 있기 때문이다.
 
 <br>
