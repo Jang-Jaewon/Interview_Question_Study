@@ -10,6 +10,7 @@
 - [REST API를 설계할 때 주의할 점은?](#%EF%B8%8F-rest-api를-설계할-때-주의할-점은)
 - [OSI 7계층 이란](#%EF%B8%8F-osi-7계층-이란)
 - [웹브라우저에서 "google.com"을 입력하면 일어나는 일](#%EF%B8%8F-웹브라우저에-"google.com"을-입력하면-일어나는-일)
+- [URI와 URL의 차이](#%EF%B8%8F-uri와-url의-차이)
 
 <br>
 
@@ -209,5 +210,18 @@
 - 3-way handshake 또는 TLS handshake를 통해 연결이 확립되었다면, 클라이언트에서 본 요청이 이뤄지는데 클라이언트는 서버에게 GET 요청 사용해 서버에게 www.google.com의 index.html를 요구한다.
 - 이 때, 정적처리는 웹서버(Apache, Microsoft(IIS), Sun, nginx 등)에서 처리하고, 동적처리라면 웹서버에서 바로 처리할 수 없기 때문에 WSGI 같은 미들웨어를 거쳐 서버로 요청이 전달된다. 이에 요청에 따라 필요한 처리가 완료하면 response를 생성하여 클라언트에게 전달한다.
 - 응답을 받은 웹브라우저가 HTML 컨텐츠를 제공한다. 
+
+<br>
+
+
+## 💡️ URI와 URL의 차이
+> URI는 특정 리소스를 식별하는 통합 자원 식별자(Uniform Resource Identifier)를 의미한다. 웹 기술에서 사용하는 논리적 또는 물리적 리소스를 식별하는 고유한 문자열 시퀀스다. URL은 흔히 웹 주소라고도 하며, 컴퓨터 네트워크 상에서 리소스가 어디 있는지 알려주기 위한 규약이다. 이에 URL은 URI의 서브셋이다.
+
+
+### 추가적인 내용 기술
+- URI(Uniform Resource Identifier)은 URL 또는 URN은 포함하거나, 둘 다를 포함할 수도 있는 포괄적 개념이다. 즉, 어떤 자원 자체를 식별하는 방법에 따라 URL 또는 URN으로 나누게되고, 이 둘을 포함하는 광범위한 개념이다.
+- URL(Uniform Resource Locator)은 우리가 흔히 아는 그 URL이다. 한 자원에 대한 구체적인 위치 "https://www.google.com" 처럼 리소스가 어디(Where)에 있고 어떻게 접근할 수 있는지 분명히 나타나있다.
+- URN(Uniform Resource Name)은 해당 자원이 무엇인지 식별하기 때문에 자원간에 이름 중복이 없다. URL과 비교하면 URN은 What을 나타내는 개념으로 도서의 ISBN이나 주민등록번호와 같은 것을 생각할 수 있다.
+- 단, URN만으로는 실제 리소스를 찾을 수 있는 방법이 보편화되있지 않기 때문에 일반적으로 자원에 접근하기 위해 URL을 사용한다.
 
 <br>
