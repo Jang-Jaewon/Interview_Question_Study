@@ -83,6 +83,17 @@
 - Django는 웹서버 인가?
     > Django는 개발 환경에서 사용할 목적으로 python으로 짜여진 가벼운 wsgi를 사용한다. 따라서 Web Application Framework이면서 Web Server이다. 하지만 배포 환경에서는 Django에 내장된 wsgi를 사용하는 것을 지양하고 있다. 이에 Web Application Framework 로써 보는 것이 적절하다.
 
+### WAS(Web Application Server)
+- WAS는 정적처리 뿐 아니라 동적처리까지 가능한 서버로 Web Server와 CGI를 합친 것이다.
+- 예를들어, Web Server(ex. Nginx)는 Python을 해석할 수 없기 때문에 동적 처리에 필요한 HTTP요청을 WAS가 웹 애플리케이션 프레임워크(ex. Django)으로 중계한다. 또는 Django로부터 받은 응답을 Nginx가 이해할 수 있도록 변환하는 역할도 WAS의 역할이다.
+- 대표적인 WAS로는 Tomcat, Jboss, Jeus 등이 있다.
+- Web Server와 WAS를 분리하는 이유는?
+    > WAS도 정적 요청에 대한 처리가 가능하지만, WAS의 비지니스 로직은 Database에 접근하는 경우가 많고, 이에 따른 수행 시간이 필요하기 때문에 정적 처리일 경우 Web Server에서 처리하는 것이 로드 분산에 효율적이다.
+- WSGI는?
+  > WSGI(Web Server Gateway Interface)는 Python으로 만들어진 Application Framework에서 사용하는 Web Server와 Web Application 간 인터페스를 제공하는 미들웨어이다. 즉, Web Server와 외부 프로그램을 연결하는 미들웨어가 WAS라면, Django와 같은 Python으로 만든 Web Application Framework가  WAS와 연결되는 경우, Web Server와 WAS를 연결하는 미들웨어 역할을 하는 것이 WSGI이다. 대표적인 WSGI는 Gunicorn, uWSGI 등이 있다.
+- 왜 WSGI가 중요할까?
+    > 전통적인 Web Server는 Python과 같은 어플리케이션을 이해하거나 실행할 수 없기 때문에 mod_python 이라는 모듈이 개발되었지만, 보안 이슈와 개발 지연 등의 이유로 새로운 방법이 필요하게 되었다. 이에 Python 커뮤니티에서 WSGI라는 미들웨어를 통해 표준 인터페이스를 만들게 되었다. WSGI는 사용하게 되면 Web Server를 다른 것으로 교체하더라도 Web Application의 코드를 수정할 필요가 없고, WSGI를 바꾸더라도 상관이 없다는 유연성을 가진다. 또한 WSGI는 같은 프로세스 내에서 여러 Application과 Framework가 실행되기 때문에 수 천 건의 request를 처리하는 것을 Framework가 아닌 WSGI의 역할이기 때문에 역할 분담에 따라 확장성에 유리하다.
+
 <br>
 
 ## 💡️ Apache와 Nginx의 차이
