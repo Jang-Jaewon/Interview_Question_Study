@@ -7,6 +7,7 @@
 - [ORM 최적화란?](#%EF%B8%8F-orm-최적화란?)
 - [select_related, prefetch_related의 차이](#%EF%B8%8F-select_relate,-prefetch_related-차이)
 - [Offset 기반 Pagination과 Cursor 기반 Pagination의 차이](#%EF%B8%8F-offset-기반-pagination과-cursor-기반-pagination의-차이)
+- [group by와 having에 관하여](#%EF%B8%8F-group-by와-having에-관하여)
 
 <br>
 
@@ -119,8 +120,6 @@ class BookListView(View):
 
 > offset-based-pagination은 건너띌 row의 수를 offset 지정하고 제한할 row의 수를 limit으로 하여 데이터를 pagination하는 기법이다. offset-based-pagination는 구현이 쉽고 직관적이며, 네트워크 자원을 효율적으로 사용하기 위한 방법으로 전통적으로 사용되어왔다. cursor-based pagination은 cursor 개념을 사용하여 사용자에게 응답해준 마지막 데이터 기준으로 다음 n개 응답하는 방식이다. 즉, "n개의 row를 skip 한 다음 10개 주세요."인 offset-based-pagination 방식이 아닌, "이 row 다음것 부터 10개 주세요."를 요청하는 방식이다. 이에 cursor-based pagination은 데이터가 잦은 수정이 발생되더라도 데이터 누락 및 중복 이슈가 없고, 빠르다는 장점이 있어 실무에서 주로 사용된다.
 
-
-
 ### 추가적인 내용 기술
 
 - offset-base-pagination는 OFFSET 값을 포함한 SQL 쿼리문을 동반하는데, row를 건너띌 시작점이 OFFSET으로 표현하고, LIMIT은 제한할 row의 수를 지정한다.
@@ -129,5 +128,20 @@ class BookListView(View):
 - cursor-based-pagination은 offset-based-pagination의 단점을 보완하기 위해 실무에서 사용하는 pagination 기법이다.
 - cursor-based-pagination은 SQL문에 WHERE절을 포함하고, 중복된 데이터가 존재할 가능성이 있다면 OR절을 추가해서 중복되지 않도록 row 기준 계속 잡아 데이터를 가져온다.
 - OR절이 필요한 이유는 create_at 등을 통해 생성된 날짜로 정렬한 뒤, pagination 했을 때, 동시에 생성된 데이터가 존재한다면 그 시간에 생성된 1개의 row를 제외하고 모두 무시될 수 있기 때문이다.
+
+<br>
+
+## 💡️ group by와 having에 관하여
+> group by를 사용하면 해당 필드의 같은 데이터를 묶어 그룹화 한 후에 각 각의 그룹에 대해 계산할 수 있다. 또한 group by를 사용할 때 having절을 함게 사용할 수 있는데, having절은 group by한 결과에 대해 filter 조건을 줄 수 있다.
+
+### 추가적인 내용 기술
+- 예를 들어, 상품 테이블에 각 상품들에 대한 분류 필드가 있다고 가정할 때, 이 분류 필드의 같은 데이터들 끼리 묶어 어떤 계산을 하고자하면 group by를 사용한다.
+- 즉, 상품 테이블의 분류에 대한 필드가 존재하는데 커피, 케익, 쥬스 등의 데이터들이 있을 때 이를 기준으로 그룹을 하여 데이터를 제어할 수 있다.
+- 이 때, group으로 묶인 커피, 케익, 쥬스 등에 필터를 걸고 싶을 때 having을 사용하는 것이다.
+- 따라서 having절은 group by가 있을 때 그 뒤에 작성하여 원하는 조건을 적용할 수 있다.
+- 또한 group by는 where절 보다는 뒤에 있고, having절 바로 앞에 와야 한다.
+- having절과 where절의 차이점
+  > where절은 데이터가 그룹되기 전에 필터링하고, having절은 그룹화된 후에 필터링하기 때문에 where절에 필터링된 데이터는 그룹에 포함되지 않는다. 즉, 그룹으로 묶기 전에 제외할 제한하기 위해 피렅를 할 경우 where절을 사용하고 그룹된 후에 그 그룹에 데이터들을 필터하고 싶다면 having을 사용하면 된다. 
+
 
 <br>
