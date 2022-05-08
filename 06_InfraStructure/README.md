@@ -94,6 +94,21 @@
 - 왜 WSGI가 중요할까?
     > 전통적인 Web Server는 Python과 같은 어플리케이션을 이해하거나 실행할 수 없기 때문에 mod_python 이라는 모듈이 개발되었지만, 보안 이슈와 개발 지연 등의 이유로 새로운 방법이 필요하게 되었다. 이에 Python 커뮤니티에서 WSGI라는 미들웨어를 통해 표준 인터페이스를 만들게 되었다. WSGI는 사용하게 되면 Web Server를 다른 것으로 교체하더라도 Web Application의 코드를 수정할 필요가 없고, WSGI를 바꾸더라도 상관이 없다는 유연성을 가진다. 또한 WSGI는 같은 프로세스 내에서 여러 Application과 Framework가 실행되기 때문에 수 천 건의 request를 처리하는 것을 Framework가 아닌 WSGI의 역할이기 때문에 역할 분담에 따라 확장성에 유리하다.
 
+### Database Server
+- 모든 웹 애플리케이션은 데이터를 저장하고 이를 제공하기 위해 1개 이상의 Database를 사용한다.
+- Database는 데이터의 구조를 정의하고, 데이터에 대한 CRUD를 수행한다.
+- 대표적인 Database Server는 SQL과 NoSQ로 나뉘게 된다.
+
+### Chaching Service
+- Chaching Service는 데이터를 거의 O(1) 내에 찾을 수 있는 단순한 Key-Value 형식의 저장소를 제공한다.
+- 애플리케이션은 Chaching Service를 통해 자원이 많이 소모되는 연산의 결과를 다시 처리하지 않고 Chache에서 가져옴으로써 서비스의 효율을 높인다.
+- 보통 애플리케이션은 데이터베이스의 쿼리 결과, 외부 서비스 호출 결과, URL에 해당하는 HTML 등을 Chache에 저장한다.
+- 이 때 주로 사용하는 Chaching Service 기술은 Redis와 Memcache로 HTML, 검색 결과, 검색어 입력 자동완성 결과 등을 Chache시켜 둔다.
+
+### Cloud Storage
+- Cloud Storage는 인터넷을 통해 파일을 저장, 접근 공유할 수 있는 저장소 시스템으로 AWS S3가 여기에 해당한다.
+- 특히, RESTful API를 사용해서 Cloud Storage를 제어할 수 있고, 비디오, 사진, 오디오 데이터, Javascript, CSS 등 모든 파일을 관리할 수 있다.
+
 <br>
 
 ## 💡️ Apache와 Nginx의 차이
